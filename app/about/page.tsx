@@ -111,16 +111,8 @@ export default function AboutPage() {
           >
             <div className="xl:w-1/2">
               <div className="relative">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 60, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                  className="absolute -inset-8 border-2 border-amber-300 rounded-full opacity-30"
-                />
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 40, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                  className="absolute -inset-12 border border-amber-200 rounded-full opacity-20"
-                />
+                <div className="absolute -inset-8 border-2 border-amber-300 rounded-full opacity-30" />
+                <div className="absolute -inset-12 border border-amber-200 rounded-full opacity-20" />
                 <Image
                   src="/placeholder.svg?height=600&width=600"
                   alt="Joshi - Vedic Astrology Master"
@@ -258,18 +250,11 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
-                whileHover={{ y: -10, scale: 1.02 }}
                 className="group"
               >
                 <Card className="royal-card h-full text-center">
                   <CardContent className="p-8">
-                    <motion.div
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.6 }}
-                      className="text-amber-600 mb-6 flex justify-center"
-                    >
-                      {credential.icon}
-                    </motion.div>
+                    <div className="text-amber-600 mb-6 flex justify-center">{credential.icon}</div>
                     <h3 className="text-lg font-bold mb-2 royal-font text-gray-800">{credential.title}</h3>
                     <Badge className="bg-amber-100 text-amber-800 font-bold mb-3">{credential.year}</Badge>
                     <p className="text-gray-600 elegant-font text-sm">{credential.description}</p>
@@ -422,18 +407,6 @@ export default function AboutPage() {
                 <div className="text-4xl font-bold royal-font royal-gold-text mb-2">100%</div>
                 <p className="text-gray-700 elegant-font">Authentic Vedic Methods</p>
               </div>
-            </div>
-            <div className="flex justify-center space-x-4 text-3xl">
-              {["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"].map((symbol, i) => (
-                <motion.span
-                  key={i}
-                  className="text-amber-600"
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 15 + i, repeat: Number.POSITIVE_INFINITY }}
-                >
-                  {symbol}
-                </motion.span>
-              ))}
             </div>
           </div>
         </motion.div>

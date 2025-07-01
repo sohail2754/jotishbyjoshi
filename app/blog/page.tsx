@@ -97,30 +97,51 @@ export default function BlogPage() {
       <section className="royal-section celestial-bg pt-24 md:pt-32">
         <div className="royal-container text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="flex justify-center mb-8">
-              <div className="w-24 md:w-32 h-24 md:h-32 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center">
+            <motion.div
+              className="flex justify-center mb-8"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="w-24 md:w-32 h-24 md:h-32 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center animate-pulse">
                 <BookOpen className="w-12 md:w-16 h-12 md:h-16 text-amber-700" />
               </div>
-            </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 royal-font royal-gold-text">
+            </motion.div>
+            <motion.h1
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 royal-font royal-gold-text"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
               Vedic Astrology Wisdom
-            </h1>
-            <p className="text-lg md:text-xl lg:text-2xl text-gray-700 max-w-4xl mx-auto mb-8 elegant-font leading-relaxed px-4">
+            </motion.h1>
+            <motion.p
+              className="text-lg md:text-xl lg:text-2xl text-gray-700 max-w-4xl mx-auto mb-8 elegant-font leading-relaxed px-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
               Explore the profound depths of Vedic astrology through authentic teachings, practical insights, and
               ancient wisdom for modern living.
-            </p>
-            <div className="flex justify-center space-x-2 md:space-x-4 text-2xl md:text-3xl">
+            </motion.p>
+            <motion.div
+              className="flex justify-center space-x-2 md:space-x-4 text-2xl md:text-3xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+            >
               {["♈", "♉", "♊", "♋", "♌", "♍"].map((symbol, i) => (
                 <motion.span
                   key={i}
-                  className="text-amber-600"
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 10 + i * 2, repeat: Number.POSITIVE_INFINITY }}
+                  className="text-amber-600 planetary-symbol"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1 + i * 0.1 }}
                 >
                   {symbol}
                 </motion.span>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -128,14 +149,19 @@ export default function BlogPage() {
       {/* Search and Filter Section */}
       <section className="py-8 md:py-12 px-4 bg-white">
         <div className="royal-container">
-          <div className="flex flex-col lg:flex-row gap-4 md:gap-6 mb-8 md:mb-12">
+          <motion.div
+            className="flex flex-col lg:flex-row gap-4 md:gap-6 mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-amber-600 w-5 h-5" />
               <Input
                 placeholder="Search articles on astrology, planets, remedies..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 py-3 text-base md:text-lg border-2 border-amber-200 focus:border-amber-400 rounded-xl bg-amber-50/50"
+                className="pl-12 py-3 text-base md:text-lg border-2 border-amber-200 focus:border-amber-400 rounded-xl bg-amber-50/50 form-input"
               />
             </div>
             <div className="flex flex-wrap gap-2 md:gap-3">
@@ -145,7 +171,7 @@ export default function BlogPage() {
                   variant={selectedCategory === category ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
-                  className={`text-xs md:text-sm ${
+                  className={`text-xs md:text-sm button-hover-effect ${
                     selectedCategory === category
                       ? "royal-button text-white font-semibold"
                       : "border-2 border-amber-400 text-amber-700 hover:bg-amber-50 font-semibold"
@@ -155,7 +181,7 @@ export default function BlogPage() {
                 </Button>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -163,7 +189,7 @@ export default function BlogPage() {
       {loading && (
         <section className="royal-section">
           <div className="royal-container text-center">
-            <Loader2 className="w-12 h-12 text-amber-600 animate-spin mx-auto mb-4" />
+            <Loader2 className="w-12 h-12 text-amber-600 animate-spin mx-auto mb-4 loading-spinner" />
             <p className="text-gray-600 elegant-font">Loading articles...</p>
           </div>
         </section>
@@ -180,7 +206,13 @@ export default function BlogPage() {
               className="text-center mb-12 md:mb-16"
             >
               <div className="flex justify-center items-center mb-6">
-                <Crown className="w-8 md:w-12 h-8 md:h-12 text-amber-600 mr-4" />
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Crown className="w-8 md:w-12 h-8 md:h-12 text-amber-600 mr-4" />
+                </motion.div>
                 <h2 className="text-3xl md:text-4xl font-bold royal-font royal-gold-text">Featured Articles</h2>
               </div>
               <p className="text-lg md:text-xl text-gray-600 elegant-font">
@@ -197,8 +229,8 @@ export default function BlogPage() {
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                   whileHover={{ y: -5 }}
                 >
-                  <Card className="royal-card h-full overflow-hidden group">
-                    <div className="relative overflow-hidden">
+                  <Card className="royal-card h-full overflow-hidden group card-hover-effect">
+                    <div className="relative overflow-hidden image-hover-effect">
                       <Image
                         src={post.image_url || "/placeholder.svg"}
                         alt={post.title}
@@ -206,7 +238,7 @@ export default function BlogPage() {
                         height={400}
                         className="w-full h-40 md:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                       />
-                      <Badge className="absolute top-4 left-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold">
+                      <Badge className="absolute top-4 left-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold badge-animate">
                         Featured
                       </Badge>
                       <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1">
@@ -219,7 +251,10 @@ export default function BlogPage() {
                           <Calendar className="w-4 h-4" />
                           {formatDate(post.created_at)}
                         </span>
-                        <Badge variant="outline" className="border-amber-400 text-amber-700 font-medium text-xs">
+                        <Badge
+                          variant="outline"
+                          className="border-amber-400 text-amber-700 font-medium text-xs badge-animate"
+                        >
                           {post.category}
                         </Badge>
                       </div>
@@ -233,7 +268,11 @@ export default function BlogPage() {
                       </p>
                       <div className="flex flex-wrap gap-2 mb-4">
                         {post.tags.slice(0, 3).map((tag) => (
-                          <Badge key={tag} variant="secondary" className="bg-amber-100 text-amber-800 text-xs">
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="bg-amber-100 text-amber-800 text-xs badge-animate"
+                          >
                             <Tag className="w-3 h-3 mr-1" />
                             {tag}
                           </Badge>
@@ -241,7 +280,7 @@ export default function BlogPage() {
                       </div>
                       <Button
                         variant="outline"
-                        className="w-full border-amber-400 text-amber-700 hover:bg-amber-50 group font-semibold text-sm md:text-base"
+                        className="w-full border-amber-400 text-amber-700 hover:bg-amber-50 group font-semibold text-sm md:text-base button-hover-effect bg-transparent"
                         asChild
                       >
                         <Link href={`/blog/${post.slug}`}>
@@ -283,8 +322,8 @@ export default function BlogPage() {
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                   whileHover={{ y: -5 }}
                 >
-                  <Card className="royal-card h-full overflow-hidden group">
-                    <div className="relative overflow-hidden">
+                  <Card className="royal-card h-full overflow-hidden group card-hover-effect">
+                    <div className="relative overflow-hidden image-hover-effect">
                       <Image
                         src={post.image_url || "/placeholder.svg"}
                         alt={post.title}
@@ -310,13 +349,16 @@ export default function BlogPage() {
                     <CardContent className="p-4 md:p-6 pt-0">
                       <p className="text-gray-600 elegant-font mb-4 text-sm line-clamp-2">{post.excerpt}</p>
                       <div className="flex justify-between items-center">
-                        <Badge variant="outline" className="border-amber-400 text-amber-700 text-xs font-medium">
+                        <Badge
+                          variant="outline"
+                          className="border-amber-400 text-amber-700 text-xs font-medium badge-animate"
+                        >
                           {post.category}
                         </Badge>
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-amber-700 hover:text-amber-800 p-0 font-semibold text-sm"
+                          className="text-amber-700 hover:text-amber-800 p-0 font-semibold text-sm button-hover-effect"
                           asChild
                         >
                           <Link href={`/blog/${post.slug}`}>
@@ -337,8 +379,19 @@ export default function BlogPage() {
       {!loading && posts.length === 0 && (
         <section className="royal-section">
           <div className="royal-container text-center">
-            <div className="max-w-md mx-auto">
-              <BookOpen className="w-16 h-16 text-amber-600 mx-auto mb-4" />
+            <motion.div
+              className="max-w-md mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <BookOpen className="w-16 h-16 text-amber-600 mx-auto mb-4" />
+              </motion.div>
               <h3 className="text-2xl font-bold text-gray-800 mb-2 royal-font">No Articles Found</h3>
               <p className="text-gray-600 elegant-font mb-6">
                 Try adjusting your search terms or browse different categories.
@@ -348,11 +401,11 @@ export default function BlogPage() {
                   setSearchTerm("")
                   setSelectedCategory("All")
                 }}
-                className="royal-button text-white font-semibold"
+                className="royal-button text-white font-semibold button-hover-effect"
               >
                 View All Articles
               </Button>
-            </div>
+            </motion.div>
           </div>
         </section>
       )}

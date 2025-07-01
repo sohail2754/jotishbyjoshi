@@ -5,15 +5,16 @@ import { Card, CardContent } from "@/components/ui/card"
 import ConsultationForm from "@/components/ConsultationForm"
 
 const services = [
-  { value: "birth-chart", label: "Complete Birth Chart Analysis", price: "₹2,999", duration: "90 min" },
-  { value: "relationship", label: "Relationship & Marriage Consultation", price: "₹2,499", duration: "75 min" },
-  { value: "career", label: "Career & Business Astrology", price: "₹2,799", duration: "75 min" },
-  { value: "health", label: "Health & Wellness Reading", price: "₹2,299", duration: "60 min" },
-  { value: "healing", label: "Chakra Balancing & Energy Healing", price: "₹1,999", duration: "60 min" },
-  { value: "pooja", label: "Personalized Grah Shanti Pooja", price: "₹3,999", duration: "2-3 hours" },
-  { value: "foundation-class", label: "Foundation of Vedic Astrology", price: "₹15,999", duration: "8 weeks" },
-  { value: "advanced-class", label: "Advanced Predictive Astrology", price: "₹25,999", duration: "12 weeks" },
-  { value: "specialized-class", label: "Specialized Astrology Courses", price: "₹12,999", duration: "6 weeks" },
+  { value: "birth-chart", label: "Complete Birth Chart Analysis", price: "₹950", duration: "90 min" },
+  { value: "relationship", label: "Relationship & Marriage Consultation", price: "₹950", duration: "75 min" },
+  { value: "career", label: "Career & Business Astrology", price: "₹950", duration: "75 min" },
+  { value: "health", label: "Health & Wellness Reading", price: "₹950", duration: "60 min" },
+  { value: "healing", label: "Chakra Balancing & Energy Healing", price: "₹950", duration: "60 min" },
+  { value: "pooja", label: "Personalized Grah Shanti Pooja", price: "₹950", duration: "2-3 hours" },
+  { value: "foundation-class", label: "Foundation of Vedic Astrology", price: "₹2,000/month", duration: "8 weeks" },
+  { value: "advanced-class", label: "Advanced Predictive Astrology", price: "₹2,000/month", duration: "12 weeks" },
+  { value: "specialized-class", label: "Specialized Astrology Courses", price: "₹2,000/month", duration: "6 weeks" },
+  { value: "practice-kundali", label: "Practice Kundali Reading", price: "₹500/month", duration: "Monthly" },
 ]
 
 const timeSlots = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"]
@@ -48,19 +49,19 @@ export default function ContactPage() {
               {
                 icon: <Mail className="w-8 h-8 text-amber-600" />,
                 title: "Email Us",
-                content: "joshi@jotishbyjoshi.com",
+                content: "joshijyotish2025@gmail.com",
                 description: "Get in touch for consultations",
               },
               {
                 icon: <Phone className="w-8 h-8 text-amber-600" />,
                 title: "Call Us",
-                content: "+91 98765 43210",
+                content: "+91 8390255850",
                 description: "WhatsApp available",
               },
               {
                 icon: <Clock className="w-8 h-8 text-amber-600" />,
                 title: "Availability",
-                content: "Mon-Sat: 9 AM - 6 PM IST",
+                content: "Mon-Sun: 11 AM - 5 PM IST",
                 description: "Available for consultations",
               },
               {

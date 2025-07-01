@@ -1,24 +1,114 @@
 import { NextResponse } from "next/server"
 
-// Mock data - in a real app, this would come from your database
-const mockServicePrices = [
-  { id: "1", service_name: "birth-chart", price: "₹2,999", original_price: "₹3,999" },
-  { id: "2", service_name: "relationship", price: "₹2,499", original_price: "₹3,299" },
-  { id: "3", service_name: "career", price: "₹2,799", original_price: "₹3,599" },
-  { id: "4", service_name: "health", price: "₹2,299", original_price: "₹2,999" },
-  { id: "5", service_name: "chakra-healing", price: "₹1,999", original_price: "₹2,499" },
-  { id: "6", service_name: "spiritual-counseling", price: "₹2,299", original_price: "₹2,799" },
-  { id: "7", service_name: "past-life", price: "₹3,499", original_price: "₹3,999" },
-  { id: "8", service_name: "grah-shanti", price: "₹3,999", original_price: "₹4,999" },
-  { id: "9", service_name: "navagraha", price: "₹5,999", original_price: "₹6,999" },
-  { id: "10", service_name: "monthly-pooja", price: "₹2,999/month", original_price: "₹3,499/month" },
+// Mock data for service prices
+const servicePrices = [
+  {
+    id: "1",
+    service_name: "birth-chart",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "2",
+    service_name: "relationship",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "3",
+    service_name: "career",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "4",
+    service_name: "health",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "5",
+    service_name: "chakra-healing",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "6",
+    service_name: "spiritual-counseling",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "7",
+    service_name: "past-life",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "8",
+    service_name: "grah-shanti",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "9",
+    service_name: "navagraha",
+    price: "₹950",
+    original_price: null,
+  },
+  {
+    id: "10",
+    service_name: "monthly-pooja",
+    price: "₹950",
+    original_price: null,
+  },
 ]
 
 export async function GET() {
   try {
-    return NextResponse.json({ prices: mockServicePrices })
+    return NextResponse.json({
+      success: true,
+      prices: servicePrices,
+    })
   } catch (error) {
     console.error("Error fetching service prices:", error)
-    return NextResponse.json({ error: "Failed to fetch service prices" }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to fetch service prices",
+      },
+      { status: 500 },
+    )
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const { service_name, price, original_price } = body
+
+    // In a real application, you would save this to a database
+    const newPrice = {
+      id: (servicePrices.length + 1).toString(),
+      service_name,
+      price,
+      original_price,
+    }
+
+    servicePrices.push(newPrice)
+
+    return NextResponse.json({
+      success: true,
+      price: newPrice,
+    })
+  } catch (error) {
+    console.error("Error creating service price:", error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to create service price",
+      },
+      { status: 500 },
+    )
   }
 }

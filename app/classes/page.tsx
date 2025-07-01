@@ -142,6 +142,27 @@ const astrologyClasses = [
     benefits: ["Expert knowledge", "Research skills", "Academic recognition"],
     icon: "♅",
   },
+  {
+    id: "practice-kundali",
+    title: "Practice Kundali Reading",
+    level: "Practice",
+    duration: "Monthly",
+    students: "300+",
+    description: "Monthly practice sessions with 10 real kundali readings for hands-on experience.",
+    features: [
+      "10 Real Kundali Charts Monthly",
+      "Detailed Analysis Practice",
+      "Expert Feedback & Guidance",
+      "Progressive Difficulty Levels",
+      "Chart Reading Techniques",
+      "Prediction Accuracy Training",
+      "Case Study Discussions",
+      "Monthly Progress Assessment",
+    ],
+    whoFor: ["Astrology students", "Practicing astrologers", "Those wanting hands-on experience"],
+    benefits: ["Practical experience", "Expert feedback", "Skill improvement"],
+    icon: "♇",
+  },
 ]
 
 export default function ClassesPage() {
@@ -393,7 +414,7 @@ export default function ClassesPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 px-12 py-4 rounded-full text-xl font-bold royal-font"
+                className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 px-12 py-4 rounded-full text-xl font-bold royal-font bg-transparent"
                 asChild
               >
                 <Link href="/contact">Book Free Consultation</Link>
