@@ -1,114 +1,86 @@
-import { NextResponse } from "next/server"
-
-// Mock data for service prices
-const servicePrices = [
-  {
-    id: "1",
-    service_name: "birth-chart",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "2",
-    service_name: "relationship",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "3",
-    service_name: "career",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "4",
-    service_name: "health",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "5",
-    service_name: "chakra-healing",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "6",
-    service_name: "spiritual-counseling",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "7",
-    service_name: "past-life",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "8",
-    service_name: "grah-shanti",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "9",
-    service_name: "navagraha",
-    price: "₹950",
-    original_price: null,
-  },
-  {
-    id: "10",
-    service_name: "monthly-pooja",
-    price: "₹950",
-    original_price: null,
-  },
-]
+import { type NextRequest, NextResponse } from "next/server"
+import {
+  getServicePrices,
+  createServicePrice,
+  updateServicePrice,
+  deleteServicePrice,
+  validateAdminSession,
+} from "@/lib/database"
+import { cookies } from "next/headers"
 
 export async function GET() {
   try {
-    return NextResponse.json({
-      success: true,
-      prices: servicePrices,
-    })
+    const prices = await getServicePrices()
+    return NextResponse.json({ success: true, prices })
   } catch (error) {
     console.error("Error fetching service prices:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to fetch service prices",
-      },
-      { status: 500 },
-    )
+    return NextResponse.json({ success: false, error: "Failed to fetch service prices" }, { status: 500 })
   }
 }
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json()
-    const { service_name, price, original_price } = body
+async function verifyAdmin() {
+  const cookieStore = cookies()
+  const sessionToken = cookieStore.get("admin_session")?.value
 
-    // In a real application, you would save this to a database
-    const newPrice = {
-      id: (servicePrices.length + 1).toString(),
-      service_name,
-      price,
-      original_price,
+  if (!sessionToken) {
+    return null
+  }
+
+  return await validateAdminSession(sessionToken)
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await verifyAdmin()
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    servicePrices.push(newPrice)
-
-    return NextResponse.json({
-      success: true,
-      price: newPrice,
+    const data = await request.json()
+    const price = await createServicePrice({
+      service_name: data.service_name,
+      display_name: data.display_name || data.service_name,
+      price: data.price,
+      original_price: data.original_price,
+      description: data.description,
+      active: true,
     })
+
+    return NextResponse.json({ success: true, price })
   } catch (error) {
     console.error("Error creating service price:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to create service price",
-      },
-      { status: 500 },
-    )
+    return NextResponse.json({ success: false, error: "Failed to create service price" }, { status: 500 })
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const session = await verifyAdmin()
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const { id, ...data } = await request.json()
+    const price = await updateServicePrice(id, data)
+    return NextResponse.json({ success: true, price })
+  } catch (error) {
+    console.error("Error updating service price:", error)
+    return NextResponse.json({ success: false, error: "Failed to update service price" }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await verifyAdmin()
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const { id } = await request.json()
+    await deleteServicePrice(id)
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("Error deleting service price:", error)
+    return NextResponse.json({ success: false, error: "Failed to delete service price" }, { status: 500 })
   }
 }

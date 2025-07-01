@@ -17,9 +17,10 @@ const navigation = [
       { name: "Personal Consultation", href: "/services#consultations" },
       { name: "Pooja & Remedies", href: "/services#poojas" },
       { name: "Spiritual Healing", href: "/services#healing" },
+      { name: "Practice Kundali", href: "/services#practice-kundali" },
     ],
   },
-  { name: "Classes", href: "/#classes" },
+  { name: "Classes", href: "/classes" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
 ]
@@ -66,7 +67,7 @@ export default function Header() {
                   scrolled ? "text-amber-700" : "text-amber-600"
                 }`}
               >
-                JotishByJoshi
+                Jyotish Joshi
               </h1>
               <p
                 className={`text-xs lg:text-sm elegant-font transition-colors ${
@@ -137,7 +138,7 @@ export default function Header() {
                 }`}
               >
                 <Phone className="w-4 h-4 text-amber-600" />
-                <span className="elegant-font font-medium">+91 98765 43210</span>
+                <span className="elegant-font font-medium">+91 8390255850</span>
               </div>
               <div className="w-px h-5 bg-gray-300"></div>
               <div
@@ -146,7 +147,7 @@ export default function Header() {
                 }`}
               >
                 <Mail className="w-4 h-4 text-amber-600" />
-                <span className="elegant-font font-medium">joshi@jotishbyjoshi.com</span>
+                <span className="elegant-font font-medium">joshijyotish2025@gmail.com</span>
               </div>
             </div>
             <Button
@@ -249,11 +250,11 @@ export default function Header() {
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center space-x-3 px-4 py-2">
                       <Phone className="w-5 h-5 text-amber-600" />
-                      <span className="text-sm font-medium text-gray-700 elegant-font">+91 98765 43210</span>
+                      <span className="text-sm font-medium text-gray-700 elegant-font">+91 8390255850</span>
                     </div>
                     <div className="flex items-center space-x-3 px-4 py-2">
                       <Mail className="w-5 h-5 text-amber-600" />
-                      <span className="text-sm font-medium text-gray-700 elegant-font">joshi@jotishbyjoshi.com</span>
+                      <span className="text-sm font-medium text-gray-700 elegant-font">joshijyotish2025@gmail.com</span>
                     </div>
                   </div>
                   <Button

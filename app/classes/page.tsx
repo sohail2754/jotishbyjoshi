@@ -345,7 +345,7 @@ export default function ClassesPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4 royal-font royal-gold-text">Why Choose JotishByJoshi Classes?</h2>
+            <h2 className="text-4xl font-bold mb-4 royal-font royal-gold-text">Why Choose Jyotish Joshi Classes?</h2>
             <p className="text-xl text-gray-600 elegant-font">Professional excellence with traditional authenticity</p>
           </motion.div>
 

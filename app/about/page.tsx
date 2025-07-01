@@ -1,153 +1,241 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Award, BookOpen, Heart, Users, Star, Crown, Calendar } from "lucide-react"
+import { Star, BookOpen, Users, Award, Heart, Crown, Sparkles, Calendar } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import Image from "next/image"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
-const credentials = [
+const achievements = [
   {
-    title: "Certified Vedic Astrologer",
+    icon: Users,
+    number: "10,000+",
+    label: "Students Worldwide",
+    description: "Taught authentic Vedic astrology",
+  },
+  {
+    icon: Star,
+    number: "15+",
+    label: "Years Experience",
+    description: "In Vedic astrology practice",
+  },
+  {
+    icon: BookOpen,
+    number: "50+",
+    label: "Ancient Texts",
+    description: "Studied and mastered",
+  },
+  {
+    icon: Award,
+    number: "25+",
+    label: "Countries",
+    description: "Students from around the globe",
+  },
+]
+
+const expertise = [
+  {
+    title: "Birth Chart Analysis",
+    description: "Deep understanding of planetary positions and their impact on life events",
+    icon: "☉",
+  },
+  {
+    title: "Predictive Astrology",
+    description: "Accurate timing of life events using Dasha systems and transits",
+    icon: "☽",
+  },
+  {
+    title: "Remedial Measures",
+    description: "Traditional Vedic remedies including mantras, gemstones, and poojas",
+    icon: "♃",
+  },
+  {
+    title: "Marriage Compatibility",
+    description: "Comprehensive Guna Milan and relationship harmony analysis",
+    icon: "♀",
+  },
+  {
+    title: "Career Guidance",
+    description: "Professional path analysis and business timing predictions",
+    icon: "♂",
+  },
+  {
+    title: "Spiritual Healing",
+    description: "Chakra balancing and energy healing for holistic wellness",
+    icon: "♆",
+  },
+]
+
+const journey = [
+  {
     year: "2008",
-    icon: <Award className="w-8 h-8" />,
-    description: "Traditional Jyotish certification",
+    title: "Spiritual Awakening",
+    description:
+      "Began studying Vedic astrology during a challenging period, finding solace and direction in ancient wisdom.",
+    icon: "☽",
   },
   {
-    title: "Spiritual Counselor",
     year: "2012",
-    icon: <Heart className="w-8 h-8" />,
-    description: "Holistic healing practitioner",
+    title: "Traditional Training",
+    description:
+      "Completed intensive study of classical texts including Brihat Parashara Hora Shastra and Jaimini Sutras.",
+    icon: "♄",
   },
   {
-    title: "Astrology Teacher",
     year: "2015",
-    icon: <BookOpen className="w-8 h-8" />,
-    description: "Professional educator certification",
+    title: "Professional Practice",
+    description:
+      "Started offering consultations and witnessed the transformative power of accurate astrological guidance.",
+    icon: "☿",
   },
   {
-    title: "Remedial Astrology Expert",
     year: "2018",
-    icon: <Users className="w-8 h-8" />,
-    description: "Specialized in Vedic remedies",
+    title: "Teaching Journey",
+    description: "Launched online classes to share authentic Vedic astrology knowledge with students worldwide.",
+    icon: "☉",
+  },
+  {
+    year: "2020",
+    title: "Digital Expansion",
+    description: "Expanded online presence to reach and help more people during global challenges.",
+  },
+  {
+    year: "2024",
+    title: "Continued Growth",
+    description: "Now serving 10,000+ students across 25+ countries with comprehensive astrology education.",
+    icon: "♃",
   },
 ]
 
 const timeline = [
   {
-    year: "Early Years",
+    year: "2008",
     event: "Spiritual Awakening",
     description:
-      "From a young age, I was spiritually inclined, asking profound questions about life, existence, and the cosmic order that governs our destinies.",
-    icon: "☽",
+      "Began studying Vedic astrology during a challenging period, finding solace and direction in ancient wisdom.",
   },
   {
-    year: "Challenging Period",
-    event: "Journey into Darkness",
+    year: "2012",
+    event: "Traditional Training",
     description:
-      "During one of life's most challenging periods, I found myself in a place of darkness and uncertainty, desperately searching for light and meaning.",
-    icon: "♄",
+      "Completed intensive study of classical texts including Brihat Parashara Hora Shastra and Jaimini Sutras.",
   },
   {
-    year: "Self-Discovery",
-    event: "Path of Self-Learning",
+    year: "2015",
+    event: "Professional Practice",
     description:
-      "Too shy to approach an astrologer directly, I embarked on the transformative path of self-learning, diving deep into ancient Vedic texts.",
-    icon: "☿",
+      "Started offering consultations and witnessed the transformative power of accurate astrological guidance.",
   },
   {
-    year: "Transformation",
-    event: "Finding the Light",
-    description:
-      "Astrology became the guiding light that illuminated my path when I needed it most, providing answers, clarity, and profound purpose.",
-    icon: "☉",
+    year: "2018",
+    event: "Teaching Journey",
+    description: "Launched online classes to share authentic Vedic astrology knowledge with students worldwide.",
   },
   {
-    year: "Present",
-    event: "Sharing the Light",
-    description:
-      "Today, I am dedicated to sharing this transformative light with others through authentic Vedic astrology education and personalized guidance.",
-    icon: "♃",
+    year: "2020",
+    event: "Digital Expansion",
+    description: "Expanded online presence to reach and help more people during global challenges.",
+  },
+  {
+    year: "2024",
+    event: "Continued Growth",
+    description: "Now serving 10,000+ students across 25+ countries with comprehensive astrology education.",
   },
 ]
 
-const achievements = [
-  { number: "15+", label: "Years of Experience", description: "Dedicated practice in Vedic astrology" },
-  { number: "10,000+", label: "Consultations Given", description: "Lives transformed through guidance" },
-  { number: "2,500+", label: "Students Taught", description: "Astrology enthusiasts trained" },
-  { number: "25+", label: "Countries Served", description: "Global reach and impact" },
+const credentials = [
+  {
+    title: "Vedic Astrology Master",
+    year: "2012",
+    description:
+      "Completed intensive study of classical texts including Brihat Parashara Hora Shastra and Jaimini Sutras.",
+    icon: "☉",
+  },
+  {
+    title: "Professional Astrologer",
+    year: "2015",
+    description:
+      "Started offering consultations and witnessed the transformative power of accurate astrological guidance.",
+    icon: "☽",
+  },
+  {
+    title: "Online Astrology Teacher",
+    year: "2018",
+    description: "Launched online classes to share authentic Vedic astrology knowledge with students worldwide.",
+    icon: "♄",
+  },
+  {
+    title: "Global Astrology Educator",
+    year: "2024",
+    description: "Now serving 10,000+ students across 25+ countries with comprehensive astrology education.",
+    icon: "♃",
+  },
 ]
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-yellow-50 text-gray-900">
       {/* Hero Section */}
-      <section className="royal-section celestial-bg">
+      <section className="royal-section celestial-bg pt-24 md:pt-32">
         <div className="royal-container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
-          >
-            <div className="flex justify-center mb-8">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center">
-                <Crown className="w-16 h-16 text-amber-700" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
+              <div className="flex items-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
+                  <Crown className="w-8 h-8 text-white" />
+                </div>
+                <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-4 py-2 text-lg royal-font">
+                  Vedic Astrology Master
+                </Badge>
               </div>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 royal-font royal-gold-text">My Astrology Journey</h1>
-            <p className="text-2xl text-gray-700 max-w-4xl mx-auto elegant-font leading-relaxed">
-              A transformative journey through the ancient wisdom of Vedic astrology, from personal darkness to
-              enlightenment, now dedicated to guiding souls worldwide on their spiritual path.
-            </p>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="flex flex-col xl:flex-row items-center gap-16"
-          >
-            <div className="xl:w-1/2">
-              <div className="relative">
-                <div className="absolute -inset-8 border-2 border-amber-300 rounded-full opacity-30" />
-                <div className="absolute -inset-12 border border-amber-200 rounded-full opacity-20" />
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 royal-font royal-gold-text">Meet Jyotish Joshi</h1>
+
+              <p className="text-xl md:text-2xl text-gray-700 mb-8 elegant-font leading-relaxed">
+                A journey from darkness to light, guided by the ancient wisdom of Vedic astrology. Now dedicated to
+                illuminating paths for thousands of souls worldwide.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="lg" className="royal-button text-white px-8 py-3" asChild>
+                  <Link href="/contact">Book Consultation</Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 px-8 py-3 bg-transparent"
+                  asChild
+                >
+                  <Link href="/classes">Join Classes</Link>
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="relative w-full max-w-md mx-auto">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full blur-3xl opacity-20"></div>
                 <Image
-                  src="/placeholder.svg?height=600&width=600"
-                  alt="Joshi - Vedic Astrology Master"
-                  width={600}
-                  height={600}
-                  className="rounded-full border-4 border-amber-400 shadow-2xl"
+                  src="/placeholder.svg?height=400&width=400&text=Jyotish+Joshi"
+                  alt="Jyotish Joshi - Vedic Astrology Master"
+                  width={400}
+                  height={400}
+                  className="relative z-10 rounded-full border-4 border-amber-300 shadow-2xl"
+                  priority
                 />
-                <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full p-4">
-                  <Star className="w-8 h-8 text-white" />
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full flex items-center justify-center z-20">
+                  <Star className="w-12 h-12 text-amber-800" />
                 </div>
               </div>
-            </div>
-            <div className="xl:w-1/2 space-y-8">
-              <div className="prose prose-xl max-w-none">
-                <p className="text-xl text-gray-700 mb-8 leading-relaxed elegant-font">
-                  My journey into astrology began during one of the most challenging periods of my life. At a time when
-                  I found myself in a place of darkness and uncertainty, I was searching for light and meaning. From a
-                  young age, I had always been spiritually inclined, and this innate spirituality naturally drew me
-                  towards the ancient wisdom of astrology.
-                </p>
-                <p className="text-xl text-gray-700 mb-8 leading-relaxed elegant-font">
-                  Despite my curiosity, I was too shy to approach an astrologer directly. Instead, I decided to embark
-                  on the path of self-learning. My inquisitive nature, which had always prompted me to ask profound
-                  questions—such as "Why is a person born in a particular body?", "Who am I?", "Are our lives governed
-                  by a higher power?"—found direction through the study of astrology.
-                </p>
-                <p className="text-xl text-gray-700 leading-relaxed elegant-font">
-                  Astrology became the guiding light that illuminated my path when I needed it most. It provided me with
-                  answers, clarity, and a sense of purpose. Today, having experienced the transformative power of
-                  astrology firsthand, I am dedicated to sharing this light with others through authentic Vedic
-                  teachings and personalized guidance.
-                </p>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -160,7 +248,7 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4 royal-font royal-gold-text">Journey Milestones</h2>
+            <h2 className="text-4xl font-bold mb-4 royal-font royal-gold-text">Achievements & Impact</h2>
             <p className="text-xl text-gray-600 elegant-font">Transforming lives through authentic Vedic wisdom</p>
           </motion.div>
 
@@ -171,12 +259,17 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="text-center"
+                whileHover={{ y: -5 }}
               >
-                <Card className="royal-card h-full p-8">
-                  <div className="text-5xl font-bold royal-font royal-gold-text mb-4">{achievement.number}</div>
-                  <h3 className="text-xl font-bold mb-2 royal-font text-gray-800">{achievement.label}</h3>
-                  <p className="text-gray-600 elegant-font">{achievement.description}</p>
+                <Card className="royal-card text-center h-full">
+                  <CardContent className="p-8">
+                    <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <achievement.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-3xl font-bold royal-font royal-gold-text mb-2">{achievement.number}</h3>
+                    <h4 className="text-lg font-semibold royal-font text-gray-800 mb-2">{achievement.label}</h4>
+                    <p className="text-gray-600 elegant-font text-sm">{achievement.description}</p>
+                  </CardContent>
                 </Card>
               </motion.div>
             ))}
@@ -184,49 +277,73 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline Section */}
+      {/* Story Section */}
       <section className="royal-section bg-gradient-to-b from-amber-50 to-white astro-bg">
         <div className="royal-container">
-          <motion.h2
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-4xl font-bold text-center mb-20 royal-font royal-gold-text"
+            className="text-center mb-16"
           >
-            Spiritual Evolution Timeline
-          </motion.h2>
+            <h2 className="text-4xl font-bold mb-4 royal-font royal-gold-text">My Journey</h2>
+            <p className="text-xl text-gray-600 elegant-font max-w-3xl mx-auto">
+              From personal transformation to guiding thousands - a story of finding light in ancient wisdom
+            </p>
+          </motion.div>
 
-          <div className="relative max-w-4xl mx-auto">
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-amber-400 via-yellow-500 to-amber-600"></div>
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="bg-white rounded-2xl p-8 md:p-12 shadow-xl mb-12"
+            >
+              <div className="flex items-center mb-6">
+                <Heart className="w-8 h-8 text-amber-600 mr-4" />
+                <h3 className="text-2xl font-bold royal-font text-gray-800">The Beginning</h3>
+              </div>
+              <p className="text-lg text-gray-700 elegant-font leading-relaxed mb-6">
+                My journey into astrology began during one of the most challenging periods of my life. At a time when I
+                found myself in a place of darkness and uncertainty, I was searching for light and meaning. From a young
+                age, I had always been spiritually inclined, and this innate spirituality naturally drew me towards the
+                ancient wisdom of astrology.
+              </p>
+              <p className="text-lg text-gray-700 elegant-font leading-relaxed">
+                Through years of dedicated study of ancient texts like Brihat Parashara Hora Shastra, Jaimini Sutras,
+                and other classical works, I learned that astrology is not just about predictions—it's about
+                understanding the cosmic blueprint of our lives and using that knowledge for spiritual growth and
+                practical guidance.
+              </p>
+            </motion.div>
 
-            {timeline.map((item, index) => (
-              <motion.div
-                key={item.year}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.2, duration: 0.6 }}
-                className={`relative flex items-center mb-16 ${index % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
-              >
-                <div className={`w-1/2 ${index % 2 === 0 ? "pr-12 text-right" : "pl-12"}`}>
-                  <Card className="royal-card">
-                    <CardContent className="p-8">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="text-3xl">{item.icon}</div>
-                        <div>
-                          <div className="text-2xl font-bold text-amber-600 royal-font">{item.year}</div>
-                          <h3 className="text-xl font-semibold text-gray-800 royal-font">{item.event}</h3>
+            <div className="space-y-8">
+              {timeline.map((item, index) => (
+                <motion.div
+                  key={item.year}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.2, duration: 0.6 }}
+                  className={`flex items-center ${index % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
+                >
+                  <div className="flex-1">
+                    <Card className="royal-card">
+                      <CardContent className="p-6">
+                        <div className="flex items-center mb-3">
+                          <Badge className="bg-amber-600 text-white px-3 py-1 royal-font mr-3">{item.year}</Badge>
+                          <h4 className="text-xl font-bold royal-font text-gray-800">{item.event}</h4>
                         </div>
-                      </div>
-                      <p className="text-gray-600 elegant-font leading-relaxed">{item.description}</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                </div>
-              </motion.div>
-            ))}
+                        <p className="text-gray-600 elegant-font">{item.description}</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center mx-8 flex-shrink-0">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1 hidden md:block"></div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

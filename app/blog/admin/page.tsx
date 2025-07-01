@@ -1,10 +1,9 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Plus, Edit, Trash2, Save, X, DollarSign } from "lucide-react"
+import { Plus, Edit, Trash2, Save, X, DollarSign, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,72 +13,77 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useToast } from "@/hooks/use-toast"
 
 interface BlogPost {
-  id: string
+  id: number
   title: string
+  slug: string
   excerpt: string
   content: string
   author: string
-  date: string
   category: string
   tags: string[]
-  image: string
+  image_url: string
   featured: boolean
   published: boolean
+  created_at: string
+  updated_at: string
 }
 
-interface PriceItem {
-  id: string
-  name: string
-  type: "class" | "service"
+interface ServicePrice {
+  id: number
+  service_name: string
+  display_name: string
   price: string
-  originalPrice?: string
+  original_price?: string
+  description?: string
+  active: boolean
+}
+
+interface ClassPrice {
+  id: number
+  class_name: string
+  display_name: string
+  price: string
+  original_price?: string
+  description?: string
+  duration?: string
+  active: boolean
+}
+
+interface User {
+  username: string
+  email: string
+  role: string
 }
 
 export default function BlogAdminPage() {
-  // Mock authentication state
+  const { toast } = useToast()
+
+  // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Mock blog posts data
-  const initialPosts: BlogPost[] = [
-    {
-      id: "1",
-      title: "Understanding Your Birth Chart: A Beginner's Guide",
-      excerpt: "Learn how to read the cosmic blueprint of your life through your birth chart analysis.",
-      content:
-        "Your birth chart is like a cosmic fingerprint that reveals the unique energies present at the moment of your birth. This comprehensive guide will walk you through the essential elements of chart interpretation, from understanding planetary positions to recognizing significant aspects and their meanings in your life journey.",
-      author: "Joshi",
-      date: "2024-01-15",
-      category: "Astrology Basics",
-      tags: ["birth chart", "beginner", "astrology"],
-      image: "/placeholder.svg?height=300&width=400",
-      featured: true,
-      published: true,
-    },
-    {
-      id: "2",
-      title: "Mercury Retrograde: Myths vs Reality",
-      excerpt: "Debunking common misconceptions about Mercury retrograde and how to navigate it.",
-      content:
-        "Mercury retrograde often gets blamed for everything from technology failures to communication breakdowns. But what does this astrological phenomenon really mean, and how can we work with its energy constructively? Let's separate fact from fiction and discover practical ways to thrive during these periods.",
-      author: "Joshi",
-      date: "2024-01-10",
-      category: "Planetary Transits",
-      tags: ["mercury retrograde", "planets", "transits"],
-      image: "/placeholder.svg?height=300&width=400",
-      featured: false,
-      published: true,
-    },
-  ]
+  // Blog state
+  const [posts, setPosts] = useState<BlogPost[]>([])
+  const [isEditing, setIsEditing] = useState(false)
+  const [currentPost, setCurrentPost] = useState<BlogPost | null>(null)
+  const [formData, setFormData] = useState<Partial<BlogPost>>({})
 
-  // Mock prices data
-  const initialPrices: PriceItem[] = [
-    { id: "1", name: "foundation", type: "class", price: "₹15,999", originalPrice: "₹19,999" },
-    { id: "2", name: "advanced", type: "class", price: "₹25,999", originalPrice: "₹29,999" },
-    { id: "3", name: "birth-chart", type: "service", price: "₹2,999", originalPrice: "₹3,999" },
-    { id: "4", name: "relationship", type: "service", price: "₹2,499", originalPrice: "₹3,299" },
-  ]
+  // Price state
+  const [servicePrices, setServicePrices] = useState<ServicePrice[]>([])
+  const [classPrices, setClassPrices] = useState<ClassPrice[]>([])
+  const [isPriceEditing, setIsPriceEditing] = useState(false)
+  const [priceType, setPriceType] = useState<"service" | "class">("service")
+  const [currentServicePrice, setCurrentServicePrice] = useState<ServicePrice | null>(null)
+  const [currentClassPrice, setCurrentClassPrice] = useState<ClassPrice | null>(null)
+  const [servicePriceFormData, setServicePriceFormData] = useState<Partial<ServicePrice>>({})
+  const [classPriceFormData, setClassPriceFormData] = useState<Partial<ClassPrice>>({})
+
+  // Login form
+  const [loginForm, setLoginForm] = useState({ username: "", password: "" })
 
   const categories = [
     "Astrology Basics",
@@ -90,25 +94,144 @@ export default function BlogAdminPage() {
     "Remedies",
   ]
 
-  const [posts, setPosts] = useState<BlogPost[]>(initialPosts)
-  const [prices, setPrices] = useState<PriceItem[]>(initialPrices)
-  const [isEditing, setIsEditing] = useState(false)
-  const [currentPost, setCurrentPost] = useState<BlogPost | null>(null)
-  const [formData, setFormData] = useState<Partial<BlogPost>>({})
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" })
+  // Check authentication on mount
+  useEffect(() => {
+    checkAuth()
+  }, [])
 
-  // Price management states
-  const [isPriceEditing, setIsPriceEditing] = useState(false)
-  const [currentPrice, setCurrentPrice] = useState<PriceItem | null>(null)
-  const [priceFormData, setPriceFormData] = useState<Partial<PriceItem>>({})
+  // Load data when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadBlogPosts()
+      loadPrices()
+    }
+  }, [isAuthenticated])
 
-  // Simple authentication check
-  const handleLogin = (e: React.FormEvent) => {
+  const checkAuth = async () => {
+    try {
+      const response = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "verify" }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setUser(data.user)
+        setIsAuthenticated(true)
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (loginForm.username === "admin" && loginForm.password === "cosmic123") {
-      setIsAuthenticated(true)
-    } else {
-      alert("Invalid credentials")
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "login",
+          username: loginForm.username,
+          password: loginForm.password,
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setUser(data.user)
+        setIsAuthenticated(true)
+        toast({
+          title: "Login successful",
+          description: "Welcome to the admin panel!",
+        })
+      } else {
+        const error = await response.json()
+        toast({
+          title: "Login failed",
+          description: error.error || "Invalid credentials",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Login error",
+        description: "Failed to connect to server",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "logout" }),
+      })
+
+      setIsAuthenticated(false)
+      setUser(null)
+      setPosts([])
+      setServicePrices([])
+      setClassPrices([])
+
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out",
+      })
+    } catch (error) {
+      console.error("Logout error:", error)
+    }
+  }
+
+  const loadBlogPosts = async () => {
+    try {
+      const response = await fetch("/api/admin/blog")
+      if (response.ok) {
+        const data = await response.json()
+        setPosts(data.posts)
+      }
+    } catch (error) {
+      console.error("Failed to load blog posts:", error)
+      toast({
+        title: "Error",
+        description: "Failed to load blog posts",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const loadPrices = async () => {
+    try {
+      const [serviceResponse, classResponse] = await Promise.all([
+        fetch("/api/service-prices"),
+        fetch("/api/class-prices"),
+      ])
+
+      if (serviceResponse.ok) {
+        const serviceData = await serviceResponse.json()
+        setServicePrices(serviceData.prices)
+      }
+
+      if (classResponse.ok) {
+        const classData = await classResponse.json()
+        setClassPrices(classData.prices)
+      }
+    } catch (error) {
+      console.error("Failed to load prices:", error)
+      toast({
+        title: "Error",
+        description: "Failed to load prices",
+        variant: "destructive",
+      })
     }
   }
 
@@ -122,7 +245,7 @@ export default function BlogAdminPage() {
       author: "Joshi",
       category: categories[0],
       tags: [],
-      image: "/placeholder.svg?height=300&width=400",
+      image_url: "/placeholder.svg?height=300&width=400",
       featured: false,
       published: false,
     })
@@ -135,40 +258,80 @@ export default function BlogAdminPage() {
     setIsEditing(true)
   }
 
-  const handleSavePost = () => {
+  const handleSavePost = async () => {
     if (!formData.title || !formData.excerpt || !formData.content) {
-      alert("Please fill in all required fields")
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      })
       return
     }
 
-    const postData: BlogPost = {
-      id: currentPost?.id || Date.now().toString(),
-      title: formData.title || "",
-      excerpt: formData.excerpt || "",
-      content: formData.content || "",
-      author: formData.author || "Joshi",
-      date: currentPost?.date || new Date().toISOString().split("T")[0],
-      category: formData.category || categories[0],
-      tags: formData.tags || [],
-      image: formData.image || "/placeholder.svg?height=300&width=400",
-      featured: formData.featured || false,
-      published: formData.published || false,
-    }
+    try {
+      const method = currentPost ? "PUT" : "POST"
+      const body = currentPost ? { id: currentPost.id, ...formData } : formData
 
-    if (currentPost) {
-      setPosts(posts.map((p) => (p.id === currentPost.id ? postData : p)))
-    } else {
-      setPosts([...posts, postData])
-    }
+      const response = await fetch("/api/admin/blog", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
 
-    setIsEditing(false)
-    setCurrentPost(null)
-    setFormData({})
+      if (response.ok) {
+        const data = await response.json()
+
+        if (currentPost) {
+          setPosts(posts.map((p) => (p.id === currentPost.id ? data.post : p)))
+        } else {
+          setPosts([data.post, ...posts])
+        }
+
+        setIsEditing(false)
+        setCurrentPost(null)
+        setFormData({})
+
+        toast({
+          title: "Success",
+          description: `Blog post ${currentPost ? "updated" : "created"} successfully`,
+        })
+      } else {
+        throw new Error("Failed to save post")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save blog post",
+        variant: "destructive",
+      })
+    }
   }
 
-  const handleDeletePost = (id: string) => {
-    if (confirm("Are you sure you want to delete this post?")) {
-      setPosts(posts.filter((p) => p.id !== id))
+  const handleDeletePost = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this post?")) return
+
+    try {
+      const response = await fetch("/api/admin/blog", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      })
+
+      if (response.ok) {
+        setPosts(posts.filter((p) => p.id !== id))
+        toast({
+          title: "Success",
+          description: "Blog post deleted successfully",
+        })
+      } else {
+        throw new Error("Failed to delete post")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete blog post",
+        variant: "destructive",
+      })
     }
   }
 
@@ -181,52 +344,178 @@ export default function BlogAdminPage() {
   }
 
   // Price management functions
-  const handleCreatePrice = () => {
-    setCurrentPrice(null)
-    setPriceFormData({
-      name: "",
-      type: "class",
-      price: "",
-      originalPrice: "",
-    })
-    setIsPriceEditing(true)
-  }
+  const handleCreatePrice = (type: "service" | "class") => {
+    setPriceType(type)
+    setCurrentServicePrice(null)
+    setCurrentClassPrice(null)
 
-  const handleEditPrice = (price: PriceItem) => {
-    setCurrentPrice(price)
-    setPriceFormData(price)
-    setIsPriceEditing(true)
-  }
-
-  const handleSavePrice = () => {
-    if (!priceFormData.name || !priceFormData.price) {
-      alert("Please fill in required fields")
-      return
-    }
-
-    const priceData: PriceItem = {
-      id: currentPrice?.id || Date.now().toString(),
-      name: priceFormData.name || "",
-      type: priceFormData.type || "class",
-      price: priceFormData.price || "",
-      originalPrice: priceFormData.originalPrice || undefined,
-    }
-
-    if (currentPrice) {
-      setPrices(prices.map((p) => (p.id === currentPrice.id ? priceData : p)))
+    if (type === "service") {
+      setServicePriceFormData({
+        service_name: "",
+        display_name: "",
+        price: "",
+        original_price: "",
+        description: "",
+        active: true,
+      })
     } else {
-      setPrices([...prices, priceData])
+      setClassPriceFormData({
+        class_name: "",
+        display_name: "",
+        price: "",
+        original_price: "",
+        description: "",
+        duration: "",
+        active: true,
+      })
     }
 
-    setIsPriceEditing(false)
-    setCurrentPrice(null)
-    setPriceFormData({})
+    setIsPriceEditing(true)
   }
 
-  const handleDeletePrice = (id: string) => {
-    if (confirm("Are you sure you want to delete this price?")) {
-      setPrices(prices.filter((p) => p.id !== id))
+  const handleEditServicePrice = (price: ServicePrice) => {
+    setPriceType("service")
+    setCurrentServicePrice(price)
+    setServicePriceFormData(price)
+    setIsPriceEditing(true)
+  }
+
+  const handleEditClassPrice = (price: ClassPrice) => {
+    setPriceType("class")
+    setCurrentClassPrice(price)
+    setClassPriceFormData(price)
+    setIsPriceEditing(true)
+  }
+
+  const handleSavePrice = async () => {
+    try {
+      const isService = priceType === "service"
+      const formData = isService ? servicePriceFormData : classPriceFormData
+      const currentPrice = isService ? currentServicePrice : currentClassPrice
+
+      if (!formData.display_name || !formData.price) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in required fields",
+          variant: "destructive",
+        })
+        return
+      }
+
+      const method = currentPrice ? "PUT" : "POST"
+      const body = currentPrice ? { id: currentPrice.id, ...formData } : formData
+      const endpoint = isService ? "/api/service-prices" : "/api/class-prices"
+
+      const response = await fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+
+        if (isService) {
+          if (currentServicePrice) {
+            setServicePrices(servicePrices.map((p) => (p.id === currentServicePrice.id ? data.price : p)))
+          } else {
+            setServicePrices([...servicePrices, data.price])
+          }
+        } else {
+          if (currentClassPrice) {
+            setClassPrices(classPrices.map((p) => (p.id === currentClassPrice.id ? data.price : p)))
+          } else {
+            setClassPrices([...classPrices, data.price])
+          }
+        }
+
+        setIsPriceEditing(false)
+        setCurrentServicePrice(null)
+        setCurrentClassPrice(null)
+        setServicePriceFormData({})
+        setClassPriceFormData({})
+
+        toast({
+          title: "Success",
+          description: `${isService ? "Service" : "Class"} price ${currentPrice ? "updated" : "created"} successfully`,
+        })
+      } else {
+        throw new Error("Failed to save price")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save price",
+        variant: "destructive",
+      })
     }
+  }
+
+  const handleDeleteServicePrice = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this price?")) return
+
+    try {
+      const response = await fetch("/api/service-prices", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      })
+
+      if (response.ok) {
+        setServicePrices(servicePrices.filter((p) => p.id !== id))
+        toast({
+          title: "Success",
+          description: "Service price deleted successfully",
+        })
+      } else {
+        throw new Error("Failed to delete price")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete service price",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleDeleteClassPrice = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this price?")) return
+
+    try {
+      const response = await fetch("/api/class-prices", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      })
+
+      if (response.ok) {
+        setClassPrices(classPrices.filter((p) => p.id !== id))
+        toast({
+          title: "Success",
+          description: "Class price deleted successfully",
+        })
+      } else {
+        throw new Error("Failed to delete price")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete class price",
+        variant: "destructive",
+      })
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-purple-900 to-indigo-950 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-400 mx-auto mb-4"></div>
+          <p className="text-purple-200">Loading admin panel...</p>
+        </div>
+      </div>
+    )
   }
 
   if (!isAuthenticated) {
@@ -249,6 +538,7 @@ export default function BlogAdminPage() {
                   onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
                   className="bg-purple-800/30 border-purple-400/30 text-white"
                   placeholder="Enter username"
+                  required
                 />
               </div>
               <div>
@@ -262,16 +552,18 @@ export default function BlogAdminPage() {
                   onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                   className="bg-purple-800/30 border-purple-400/30 text-white"
                   placeholder="Enter password"
+                  required
                 />
               </div>
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
               >
-                Login
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
             </form>
-            <p className="text-sm text-purple-300 mt-4 text-center">Demo credentials: admin / cosmic123</p>
+            <p className="text-sm text-purple-300 mt-4 text-center">Default credentials: admin / cosmic123</p>
           </CardContent>
         </Card>
       </div>
@@ -283,12 +575,16 @@ export default function BlogAdminPage() {
       {/* Header */}
       <div className="border-b border-purple-400/30 bg-purple-800/20 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-purple-200">Admin Dashboard</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-purple-200">Admin Dashboard</h1>
+            <p className="text-sm text-purple-300">Welcome, {user?.username}</p>
+          </div>
           <Button
-            onClick={() => setIsAuthenticated(false)}
+            onClick={handleLogout}
             variant="outline"
-            className="border-purple-400 text-purple-200 hover:bg-purple-600 hover:text-white"
+            className="border-purple-400 text-purple-200 hover:bg-purple-600 hover:text-white bg-transparent"
           >
+            <LogOut className="w-4 h-4 mr-2" />
             Logout
           </Button>
         </div>
@@ -299,10 +595,10 @@ export default function BlogAdminPage() {
         <Tabs defaultValue="blog" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-purple-800/30 border border-purple-400/30">
             <TabsTrigger value="blog" className="data-[state=active]:bg-purple-600 text-purple-200">
-              Blog Management
+              Blog Management ({posts.length})
             </TabsTrigger>
             <TabsTrigger value="prices" className="data-[state=active]:bg-purple-600 text-purple-200">
-              Price Management
+              Price Management ({servicePrices.length + classPrices.length})
             </TabsTrigger>
           </TabsList>
 
@@ -479,7 +775,7 @@ export default function BlogAdminPage() {
                               <p className="text-purple-200 mb-2">{post.excerpt}</p>
                               <div className="flex items-center gap-4 text-sm text-purple-300">
                                 <span>{post.category}</span>
-                                <span>{new Date(post.date).toLocaleDateString()}</span>
+                                <span>{new Date(post.created_at).toLocaleDateString()}</span>
                                 <div className="flex gap-1">
                                   {post.tags.map((tag) => (
                                     <Badge
@@ -516,6 +812,21 @@ export default function BlogAdminPage() {
                       </Card>
                     </motion.div>
                   ))}
+
+                  {posts.length === 0 && (
+                    <Card className="bg-gradient-to-br from-purple-800/50 to-indigo-800/50 border-purple-400/30 backdrop-blur-sm">
+                      <CardContent className="p-12 text-center">
+                        <p className="text-purple-200 text-lg mb-4">No blog posts found</p>
+                        <Button
+                          onClick={handleCreatePost}
+                          className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Create Your First Post
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               </div>
             )}
@@ -528,7 +839,9 @@ export default function BlogAdminPage() {
                 <Card className="bg-gradient-to-br from-purple-800/50 to-indigo-800/50 border-purple-400/30 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="text-purple-200 flex items-center justify-between">
-                      {currentPrice ? "Edit Price" : "Add New Price"}
+                      {(priceType === "service" ? currentServicePrice : currentClassPrice)
+                        ? "Edit Price"
+                        : "Add New Price"}
                       <Button
                         onClick={() => setIsPriceEditing(false)}
                         variant="ghost"
@@ -542,35 +855,48 @@ export default function BlogAdminPage() {
                   <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="name" className="text-purple-200">
-                          Item Name *
+                        <Label htmlFor="display_name" className="text-purple-200">
+                          Display Name *
                         </Label>
                         <Input
-                          id="name"
-                          value={priceFormData.name || ""}
-                          onChange={(e) => setPriceFormData({ ...priceFormData, name: e.target.value })}
+                          id="display_name"
+                          value={
+                            priceType === "service"
+                              ? servicePriceFormData.display_name || ""
+                              : classPriceFormData.display_name || ""
+                          }
+                          onChange={(e) => {
+                            if (priceType === "service") {
+                              setServicePriceFormData({ ...servicePriceFormData, display_name: e.target.value })
+                            } else {
+                              setClassPriceFormData({ ...classPriceFormData, display_name: e.target.value })
+                            }
+                          }}
                           className="bg-purple-800/30 border-purple-400/30 text-white"
-                          placeholder="e.g., foundation, birth-chart"
+                          placeholder="e.g., Birth Chart Analysis"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="type" className="text-purple-200">
-                          Type
+                        <Label htmlFor="internal_name" className="text-purple-200">
+                          Internal Name
                         </Label>
-                        <Select
-                          value={priceFormData.type || "class"}
-                          onValueChange={(value: "class" | "service") =>
-                            setPriceFormData({ ...priceFormData, type: value })
+                        <Input
+                          id="internal_name"
+                          value={
+                            priceType === "service"
+                              ? servicePriceFormData.service_name || ""
+                              : classPriceFormData.class_name || ""
                           }
-                        >
-                          <SelectTrigger className="bg-purple-800/30 border-purple-400/30 text-white">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="class">Class</SelectItem>
-                            <SelectItem value="service">Service</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          onChange={(e) => {
+                            if (priceType === "service") {
+                              setServicePriceFormData({ ...servicePriceFormData, service_name: e.target.value })
+                            } else {
+                              setClassPriceFormData({ ...classPriceFormData, class_name: e.target.value })
+                            }
+                          }}
+                          className="bg-purple-800/30 border-purple-400/30 text-white"
+                          placeholder="e.g., birth-chart"
+                        />
                       </div>
                     </div>
 
@@ -581,10 +907,18 @@ export default function BlogAdminPage() {
                         </Label>
                         <Input
                           id="price"
-                          value={priceFormData.price || ""}
-                          onChange={(e) => setPriceFormData({ ...priceFormData, price: e.target.value })}
+                          value={
+                            priceType === "service" ? servicePriceFormData.price || "" : classPriceFormData.price || ""
+                          }
+                          onChange={(e) => {
+                            if (priceType === "service") {
+                              setServicePriceFormData({ ...servicePriceFormData, price: e.target.value })
+                            } else {
+                              setClassPriceFormData({ ...classPriceFormData, price: e.target.value })
+                            }
+                          }}
                           className="bg-purple-800/30 border-purple-400/30 text-white"
-                          placeholder="₹15,999"
+                          placeholder="₹950"
                         />
                       </div>
                       <div>
@@ -593,12 +927,61 @@ export default function BlogAdminPage() {
                         </Label>
                         <Input
                           id="originalPrice"
-                          value={priceFormData.originalPrice || ""}
-                          onChange={(e) => setPriceFormData({ ...priceFormData, originalPrice: e.target.value })}
+                          value={
+                            priceType === "service"
+                              ? servicePriceFormData.original_price || ""
+                              : classPriceFormData.original_price || ""
+                          }
+                          onChange={(e) => {
+                            if (priceType === "service") {
+                              setServicePriceFormData({ ...servicePriceFormData, original_price: e.target.value })
+                            } else {
+                              setClassPriceFormData({ ...classPriceFormData, original_price: e.target.value })
+                            }
+                          }}
                           className="bg-purple-800/30 border-purple-400/30 text-white"
-                          placeholder="₹19,999"
+                          placeholder="₹1200"
                         />
                       </div>
+                    </div>
+
+                    {priceType === "class" && (
+                      <div>
+                        <Label htmlFor="duration" className="text-purple-200">
+                          Duration
+                        </Label>
+                        <Input
+                          id="duration"
+                          value={classPriceFormData.duration || ""}
+                          onChange={(e) => setClassPriceFormData({ ...classPriceFormData, duration: e.target.value })}
+                          className="bg-purple-800/30 border-purple-400/30 text-white"
+                          placeholder="3 months"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <Label htmlFor="description" className="text-purple-200">
+                        Description
+                      </Label>
+                      <Textarea
+                        id="description"
+                        value={
+                          priceType === "service"
+                            ? servicePriceFormData.description || ""
+                            : classPriceFormData.description || ""
+                        }
+                        onChange={(e) => {
+                          if (priceType === "service") {
+                            setServicePriceFormData({ ...servicePriceFormData, description: e.target.value })
+                          } else {
+                            setClassPriceFormData({ ...classPriceFormData, description: e.target.value })
+                          }
+                        }}
+                        className="bg-purple-800/30 border-purple-400/30 text-white"
+                        placeholder="Brief description of the service or class"
+                        rows={3}
+                      />
                     </div>
 
                     <div className="flex gap-4">
@@ -624,64 +1007,167 @@ export default function BlogAdminPage() {
               /* Prices List */
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold text-purple-200">Price Management ({prices.length})</h2>
-                  <Button
-                    onClick={handleCreatePrice}
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Price
-                  </Button>
+                  <h2 className="text-2xl font-bold text-purple-200">Price Management</h2>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleCreatePrice("service")}
+                      className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Service Price
+                    </Button>
+                    <Button
+                      onClick={() => handleCreatePrice("class")}
+                      className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Class Price
+                    </Button>
+                  </div>
                 </div>
 
-                <div className="grid gap-6">
-                  {prices.map((price, index) => (
-                    <motion.div
-                      key={price.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1, duration: 0.5 }}
-                    >
-                      <Card className="bg-gradient-to-br from-purple-800/50 to-indigo-800/50 border-purple-400/30 backdrop-blur-sm">
-                        <CardContent className="p-6">
-                          <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-4">
-                              <DollarSign className="w-8 h-8 text-amber-400" />
-                              <div>
-                                <h3 className="text-xl font-semibold text-purple-100">{price.name}</h3>
-                                <div className="flex items-center gap-2">
-                                  <Badge variant={price.type === "class" ? "default" : "secondary"}>{price.type}</Badge>
-                                  <span className="text-2xl font-bold text-amber-400">{price.price}</span>
-                                  {price.originalPrice && (
-                                    <span className="text-lg text-gray-400 line-through">{price.originalPrice}</span>
+                {/* Service Prices */}
+                <div>
+                  <h3 className="text-xl font-semibold text-purple-200 mb-4">
+                    Service Prices ({servicePrices.length})
+                  </h3>
+                  <div className="grid gap-4">
+                    {servicePrices.map((price, index) => (
+                      <motion.div
+                        key={price.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05, duration: 0.3 }}
+                      >
+                        <Card className="bg-gradient-to-br from-purple-800/50 to-indigo-800/50 border-purple-400/30 backdrop-blur-sm">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-4">
+                                <DollarSign className="w-6 h-6 text-amber-400" />
+                                <div>
+                                  <h4 className="text-lg font-semibold text-purple-100">{price.display_name}</h4>
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="secondary">Service</Badge>
+                                    <span className="text-xl font-bold text-amber-400">{price.price}</span>
+                                    {price.original_price && (
+                                      <span className="text-sm text-gray-400 line-through">{price.original_price}</span>
+                                    )}
+                                  </div>
+                                  {price.description && (
+                                    <p className="text-sm text-purple-300 mt-1">{price.description}</p>
                                   )}
                                 </div>
                               </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  onClick={() => handleEditServicePrice(price)}
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-purple-400 text-purple-200 hover:bg-purple-600 hover:text-white"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  onClick={() => handleDeleteServicePrice(price.id)}
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-red-400 text-red-300 hover:bg-red-600 hover:text-white"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex gap-2">
-                              <Button
-                                onClick={() => handleEditPrice(price)}
-                                size="sm"
-                                variant="outline"
-                                className="border-purple-400 text-purple-200 hover:bg-purple-600 hover:text-white"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                onClick={() => handleDeletePrice(price.id)}
-                                size="sm"
-                                variant="outline"
-                                className="border-red-400 text-red-300 hover:bg-red-600 hover:text-white"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Class Prices */}
+                <div>
+                  <h3 className="text-xl font-semibold text-purple-200 mb-4">Class Prices ({classPrices.length})</h3>
+                  <div className="grid gap-4">
+                    {classPrices.map((price, index) => (
+                      <motion.div
+                        key={price.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05, duration: 0.3 }}
+                      >
+                        <Card className="bg-gradient-to-br from-purple-800/50 to-indigo-800/50 border-purple-400/30 backdrop-blur-sm">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-4">
+                                <DollarSign className="w-6 h-6 text-amber-400" />
+                                <div>
+                                  <h4 className="text-lg font-semibold text-purple-100">{price.display_name}</h4>
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="default">Class</Badge>
+                                    <span className="text-xl font-bold text-amber-400">{price.price}</span>
+                                    {price.original_price && (
+                                      <span className="text-sm text-gray-400 line-through">{price.original_price}</span>
+                                    )}
+                                    {price.duration && (
+                                      <Badge variant="outline" className="border-purple-400 text-purple-200">
+                                        {price.duration}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  {price.description && (
+                                    <p className="text-sm text-purple-300 mt-1">{price.description}</p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  onClick={() => handleEditClassPrice(price)}
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-purple-400 text-purple-200 hover:bg-purple-600 hover:text-white"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  onClick={() => handleDeleteClassPrice(price.id)}
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-red-400 text-red-300 hover:bg-red-600 hover:text-white"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {servicePrices.length === 0 && classPrices.length === 0 && (
+                  <Card className="bg-gradient-to-br from-purple-800/50 to-indigo-800/50 border-purple-400/30 backdrop-blur-sm">
+                    <CardContent className="p-12 text-center">
+                      <p className="text-purple-200 text-lg mb-4">No prices configured</p>
+                      <div className="flex gap-4 justify-center">
+                        <Button
+                          onClick={() => handleCreatePrice("service")}
+                          className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Service Price
+                        </Button>
+                        <Button
+                          onClick={() => handleCreatePrice("class")}
+                          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Class Price
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
           </TabsContent>
