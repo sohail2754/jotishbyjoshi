@@ -1,0 +1,5 @@
+{
+  "version": 2,
+  // Tell Vercel to regenerate (or update) the lockfile if it is out-of-date.
+  "installCommand": "pnpm install --no-frozen-lockfile"
+}
