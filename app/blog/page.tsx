@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
+import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
 import { Search, Calendar, Tag, ArrowRight, BookOpen, Crown, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,7 +10,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import Image from "next/image"
-import NewsletterForm from "@/components/NewsletterForm"
+
+// Dynamically import the NewsletterForm for better performance
+const NewsletterForm = dynamic(() => import("@/components/NewsletterForm"), {
+  loading: () => (
+    <div className="w-full h-48 flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+    </div>
+  ),
+  ssr: false,
+})
 
 interface BlogPost {
   id: number
@@ -42,36 +52,30 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
 
   useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true)
+      try {
+        const params = new URLSearchParams()
+        if (searchTerm) params.append("search", searchTerm)
+        if (selectedCategory !== "All") params.append("category", selectedCategory)
+
+        const response = await fetch(`/api/blog?${params}`)
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const data = await response.json()
+        setPosts(data.posts || [])
+      } catch (error) {
+        console.error("Error fetching posts:", error)
+        setPosts([])
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchPosts()
   }, [searchTerm, selectedCategory])
-
-  const fetchPosts = async () => {
-    setLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (searchTerm) params.append("search", searchTerm)
-      if (selectedCategory !== "All") params.append("category", selectedCategory)
-
-      const response = await fetch(`/api/blog?${params}`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const contentType = response.headers.get("content-type")
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Response is not JSON")
-      }
-
-      const data = await response.json()
-      setPosts(data.posts || [])
-    } catch (error) {
-      console.error("Error fetching posts:", error)
-      setPosts([])
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const featuredPosts = posts.filter((post) => post.featured)
   const regularPosts = posts.filter((post) => !post.featured)
@@ -393,7 +397,9 @@ export default function BlogPage() {
       )}
 
       {/* Newsletter Signup */}
-      <NewsletterForm />
+      <Suspense>
+        <NewsletterForm />
+      </Suspense>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { getBlogPostBySlug } from "@/lib/database"
+import { getBlogPostBySlug } from "@/lib/database" // Assuming you have this function
 import { Calendar, Tag, ArrowLeft, Clock, User, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +14,7 @@ type BlogPostPageProps = {
   }
 }
 
+// Generate dynamic metadata for SEO
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const post = await getBlogPostBySlug(params.slug)
 
@@ -65,11 +66,12 @@ const calculateReadTime = (content: string) => {
   return `${readTime} min read`
 }
 
+// This is now a Server Component for maximum performance
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = await getBlogPostBySlug(params.slug)
 
   if (!post) {
-    notFound()
+    notFound() // Triggers the not-found.tsx page
   }
 
   return (

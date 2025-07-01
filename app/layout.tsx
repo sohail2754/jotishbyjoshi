@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from "@/lib/utils"
 
+// Optimized font loading with next/font
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 const playfairDisplay = Playfair_Display({
