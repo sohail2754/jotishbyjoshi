@@ -1,17 +1,25 @@
+export const dynamic = "force-dynamic"
+
 import { type NextRequest, NextResponse } from "next/server"
-import { getBlogPostBySlug } from "@/lib/database"
+import { sql } from "@vercel/postgres"
 
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   try {
-    const post = await getBlogPostBySlug(params.slug)
+    const slug = params.slug
 
-    if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 })
+    if (!slug) {
+      return new NextResponse("Slug is required", { status: 400 })
     }
 
-    return NextResponse.json({ post })
-  } catch (error) {
-    console.error("Error fetching blog post:", error)
-    return NextResponse.json({ error: "Failed to fetch blog post" }, { status: 500 })
+    const blog = await sql`SELECT * FROM blogs WHERE slug = ${slug}`
+
+    if (!blog.rows.length) {
+      return new NextResponse("Blog not found", { status: 404 })
+    }
+
+    return NextResponse.json(blog.rows[0])
+  } catch (error: any) {
+    console.error(error)
+    return new NextResponse(error.message, { status: 500 })
   }
 }
