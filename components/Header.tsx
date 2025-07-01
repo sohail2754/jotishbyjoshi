@@ -137,15 +137,6 @@ export default function Header() {
                   scrolled ? "text-gray-600" : "text-gray-500"
                 }`}
               >
-                <Phone className="w-4 h-4 text-amber-600" />
-                <span className="elegant-font font-medium">+91 8390255850</span>
-              </div>
-              <div className="w-px h-5 bg-gray-300"></div>
-              <div
-                className={`flex items-center space-x-2 transition-colors ${
-                  scrolled ? "text-gray-600" : "text-gray-500"
-                }`}
-              >
                 <Mail className="w-4 h-4 text-amber-600" />
                 <span className="elegant-font font-medium">joshijyotish2025@gmail.com</span>
               </div>

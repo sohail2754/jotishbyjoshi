@@ -108,7 +108,7 @@ export default function BlogPage() {
               </div>
             </motion.div>
             <motion.h1
-              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 royal-font royal-gold-text"
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-2 royal-font royal-gold-text"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
@@ -124,24 +124,6 @@ export default function BlogPage() {
               Explore the profound depths of Vedic astrology through authentic teachings, practical insights, and
               ancient wisdom for modern living.
             </motion.p>
-            <motion.div
-              className="flex justify-center space-x-2 md:space-x-4 text-2xl md:text-3xl"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-            >
-              {["♈", "♉", "♊", "♋", "♌", "♍"].map((symbol, i) => (
-                <motion.span
-                  key={i}
-                  className="text-amber-600 planetary-symbol"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 + i * 0.1 }}
-                >
-                  {symbol}
-                </motion.span>
-              ))}
-            </motion.div>
           </motion.div>
         </div>
       </section>

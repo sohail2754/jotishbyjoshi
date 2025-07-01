@@ -135,8 +135,8 @@ const testimonials = [
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-yellow-50 text-gray-900">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 celestial-bg">
+      {/* Hero Section - Properly spaced from header */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 pt-20 celestial-bg">
         <div className="text-center max-w-6xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -144,7 +144,7 @@ export default function HomePage() {
             transition={{ duration: 1 }}
             className="mb-12"
           >
-            {/* Static Royal Logo */}
+            {/* Royal Logo */}
             <div className="flex justify-center mb-8">
               <motion.div
                 className="relative"
@@ -152,7 +152,7 @@ export default function HomePage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                {/* Static outer circle with zodiac signs */}
+                {/* Outer circle with zodiac signs */}
                 <div
                   className="zodiac-wheel w-60 h-60 md:w-80 md:h-80"
                   style={{
@@ -173,7 +173,7 @@ export default function HomePage() {
                     )`,
                   }}
                 >
-                  {/* Static zodiac signs around the circle */}
+                  {/* Zodiac signs around the circle */}
                   {zodiacSigns.map((symbol, i) => (
                     <motion.div
                       key={i}
@@ -194,7 +194,7 @@ export default function HomePage() {
                   ))}
                 </div>
 
-                {/* Static inner circle with planetary symbols */}
+                {/* Inner circle with planetary symbols */}
                 <div className="absolute inset-6 md:inset-8 border-2 border-amber-300 rounded-full">
                   {planetarySymbols.slice(0, 8).map((symbol, i) => (
                     <motion.div
@@ -216,7 +216,7 @@ export default function HomePage() {
                   ))}
                 </div>
 
-                {/* Static central sun symbol */}
+                {/* Central sun symbol */}
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center"
                   initial={{ opacity: 0, scale: 0 }}
@@ -231,7 +231,7 @@ export default function HomePage() {
             </div>
 
             <motion.h1
-              className="text-6xl md:text-8xl font-bold mb-6 royal-font royal-gold-text"
+              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 royal-font royal-gold-text"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
@@ -242,7 +242,7 @@ export default function HomePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 1 }}
-              className="text-2xl md:text-3xl mb-8 text-gray-700 elegant-font font-medium text-reveal"
+              className="text-xl md:text-2xl lg:text-3xl mb-8 text-gray-700 elegant-font font-medium text-reveal max-w-4xl mx-auto"
             >
               Unlock the Wisdom of the Stars—Master Vedic Astrology & Transform Lives
             </motion.p>
@@ -256,7 +256,7 @@ export default function HomePage() {
           >
             <Button
               size="lg"
-              className="royal-button text-white px-12 py-4 rounded-full text-lg font-semibold royal-font shadow-xl button-hover-effect"
+              className="royal-button text-white px-8 md:px-12 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold royal-font shadow-xl button-hover-effect"
               asChild
             >
               <Link href="/classes">Explore Astrology Classes</Link>
@@ -264,7 +264,7 @@ export default function HomePage() {
             <Button
               size="lg"
               variant="outline"
-              className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 px-12 py-4 rounded-full text-lg font-semibold royal-font button-hover-effect bg-transparent"
+              className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 px-8 md:px-12 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold royal-font button-hover-effect bg-transparent"
               asChild
             >
               <Link href="/contact">Book Consultation</Link>
@@ -274,8 +274,8 @@ export default function HomePage() {
       </section>
 
       {/* Introduction Section */}
-      <section className="royal-section bg-gradient-to-b from-white to-amber-50">
-        <div className="royal-container text-center">
+      <section className="py-16 md:py-24 bg-gradient-to-b from-white to-amber-50">
+        <div className="max-w-7xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -288,14 +288,14 @@ export default function HomePage() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center animate-pulse">
-                <Star className="w-12 h-12 text-amber-700" />
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center animate-pulse">
+                <Star className="w-10 h-10 md:w-12 md:h-12 text-amber-700" />
               </div>
             </motion.div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 royal-font royal-gold-text text-reveal">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 royal-font royal-gold-text text-reveal">
               Master the Ancient Science of Jyotish
             </h2>
-            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed max-w-5xl mx-auto elegant-font text-reveal-delay">
+            <p className="text-lg md:text-xl lg:text-2xl text-gray-700 leading-relaxed max-w-5xl mx-auto elegant-font text-reveal-delay">
               My journey into astrology began during one of the most challenging periods of my life, when I was
               searching for light and meaning. Today, having experienced the transformative power of Vedic astrology
               firsthand, I am dedicated to sharing this ancient wisdom through comprehensive courses and personalized
@@ -305,14 +305,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Classes Preview */}
-      <section className="royal-section bg-white astro-bg">
-        <div className="royal-container">
+      {/* Classes Preview Section */}
+      <section className="py-16 md:py-24 bg-white astro-bg">
+        <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            className="text-center mb-16 md:mb-20"
           >
             <div className="flex justify-center items-center mb-6">
               <motion.div
@@ -320,17 +320,19 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <BookOpen className="w-16 h-16 text-amber-600 mr-4" />
+                <BookOpen className="w-12 h-12 md:w-16 md:h-16 text-amber-600 mr-4" />
               </motion.div>
-              <h2 className="text-5xl md:text-6xl font-bold royal-font royal-gold-text">Astrology Classes</h2>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold royal-font royal-gold-text">
+                Astrology Classes
+              </h2>
             </div>
-            <p className="text-2xl text-gray-600 elegant-font max-w-4xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-600 elegant-font max-w-4xl mx-auto">
               Transform your life and career with authentic Vedic astrology education.
             </p>
             <div className="royal-divider"></div>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
             {astrologyClasses.map((course, index) => (
               <motion.div
                 key={course.title}
@@ -346,18 +348,22 @@ export default function HomePage() {
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center text-4xl">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center text-3xl md:text-4xl">
                         {course.icon}
                       </div>
                     </motion.div>
                     <Badge
                       variant="secondary"
-                      className="mb-3 bg-amber-100 text-amber-800 font-semibold px-4 py-1 badge-animate"
+                      className="mb-3 bg-amber-100 text-amber-800 font-semibold px-3 md:px-4 py-1 badge-animate"
                     >
                       {course.level}
                     </Badge>
-                    <CardTitle className="text-2xl font-bold royal-font text-gray-800 mb-2">{course.title}</CardTitle>
-                    <p className="text-gray-600 elegant-font text-lg leading-relaxed">{course.description}</p>
+                    <CardTitle className="text-xl md:text-2xl font-bold royal-font text-gray-800 mb-2">
+                      {course.title}
+                    </CardTitle>
+                    <p className="text-gray-600 elegant-font text-base md:text-lg leading-relaxed">
+                      {course.description}
+                    </p>
                   </CardHeader>
 
                   <CardContent className="space-y-6">
@@ -368,21 +374,21 @@ export default function HomePage() {
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <Clock className="w-5 h-5 text-amber-600 mx-auto mb-1" />
-                        <div className="font-semibold text-gray-800">{course.duration}</div>
+                        <Clock className="w-4 h-4 md:w-5 md:h-5 text-amber-600 mx-auto mb-1" />
+                        <div className="font-semibold text-gray-800 text-sm md:text-base">{course.duration}</div>
                       </motion.div>
                       <motion.div
                         className="bg-amber-50 rounded-lg p-3"
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <Users className="w-5 h-5 text-amber-600 mx-auto mb-1" />
-                        <div className="font-semibold text-gray-800">{course.students}</div>
+                        <Users className="w-4 h-4 md:w-5 md:h-5 text-amber-600 mx-auto mb-1" />
+                        <div className="font-semibold text-gray-800 text-sm md:text-base">{course.students}</div>
                       </motion.div>
                     </div>
 
                     <Button
-                      className="w-full royal-button text-white font-semibold py-3 royal-font text-lg button-hover-effect"
+                      className="w-full royal-button text-white font-semibold py-2 md:py-3 royal-font text-base md:text-lg button-hover-effect"
                       asChild
                     >
                       <Link href="/classes">Learn More</Link>
@@ -401,7 +407,7 @@ export default function HomePage() {
           >
             <Button
               size="lg"
-              className="royal-button text-white px-12 py-4 rounded-full text-xl font-bold royal-font shadow-xl button-hover-effect"
+              className="royal-button text-white px-8 md:px-12 py-3 md:py-4 rounded-full text-lg md:text-xl font-bold royal-font shadow-xl button-hover-effect"
               asChild
             >
               <Link href="/classes">View All Classes</Link>
@@ -410,17 +416,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Other Services */}
-      <section className="royal-section bg-gradient-to-b from-amber-50 to-white">
-        <div className="royal-container">
+      {/* Services Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-amber-50 to-white">
+        <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4 royal-font royal-gold-text">Additional Services</h2>
-            <p className="text-xl text-gray-600 elegant-font">Personalized guidance and spiritual solutions</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 royal-font royal-gold-text">Additional Services</h2>
+            <p className="text-lg md:text-xl text-gray-600 elegant-font">
+              Personalized guidance and spiritual solutions
+            </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -434,7 +442,7 @@ export default function HomePage() {
                 className="group"
               >
                 <Card className="royal-card h-full text-center card-hover-effect">
-                  <CardContent className="p-8">
+                  <CardContent className="p-6 md:p-8">
                     <motion.div
                       className="mb-6 flex justify-center"
                       whileHover={{ scale: 1.1 }}
@@ -442,9 +450,14 @@ export default function HomePage() {
                     >
                       {service.icon}
                     </motion.div>
-                    <h3 className="text-xl font-bold mb-4 royal-font text-gray-800">{service.title}</h3>
-                    <p className="text-gray-600 mb-6 elegant-font leading-relaxed">{service.description}</p>
-                    <Button className="royal-button text-white font-semibold px-8 py-2 button-hover-effect" asChild>
+                    <h3 className="text-lg md:text-xl font-bold mb-4 royal-font text-gray-800">{service.title}</h3>
+                    <p className="text-gray-600 mb-6 elegant-font leading-relaxed text-sm md:text-base">
+                      {service.description}
+                    </p>
+                    <Button
+                      className="royal-button text-white font-semibold px-6 md:px-8 py-2 button-hover-effect"
+                      asChild
+                    >
                       <Link href={service.href}>Learn More</Link>
                     </Button>
                   </CardContent>
@@ -456,16 +469,16 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="royal-section bg-white astro-bg">
-        <div className="royal-container">
+      <section className="py-16 md:py-24 bg-white astro-bg">
+        <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4 royal-font royal-gold-text">Student Success Stories</h2>
-            <p className="text-xl text-gray-600 elegant-font">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 royal-font royal-gold-text">Student Success Stories</h2>
+            <p className="text-lg md:text-xl text-gray-600 elegant-font">
               Transformative experiences from our astrology community
             </p>
           </motion.div>
@@ -511,7 +524,7 @@ export default function HomePage() {
                     <Badge variant="outline" className="mb-3 border-amber-300 text-amber-700 badge-animate">
                       {testimonial.course}
                     </Badge>
-                    <p className="text-gray-600 italic elegant-font">"{testimonial.text}"</p>
+                    <p className="text-gray-600 italic elegant-font text-sm md:text-base">"{testimonial.text}"</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -521,28 +534,28 @@ export default function HomePage() {
       </section>
 
       {/* Call-to-Action Section */}
-      <section className="royal-section bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-100">
+      <section className="py-16 md:py-24 bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-100">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
-          className="royal-container text-center"
+          className="max-w-7xl mx-auto px-4 text-center"
         >
-          <div className="royal-card p-16 max-w-5xl mx-auto">
+          <div className="royal-card p-8 md:p-16 max-w-5xl mx-auto">
             <motion.div
               className="flex justify-center mb-8"
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center animate-pulse">
-                <Crown className="w-16 h-16 text-amber-700" />
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center animate-pulse">
+                <Crown className="w-12 h-12 md:w-16 md:h-16 text-amber-700" />
               </div>
             </motion.div>
-            <h2 className="text-5xl font-bold mb-6 royal-font royal-gold-text text-reveal">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 royal-font royal-gold-text text-reveal">
               Begin Your Astrological Journey Today
             </h2>
-            <p className="text-2xl text-gray-700 mb-12 elegant-font leading-relaxed text-reveal-delay">
+            <p className="text-lg md:text-xl lg:text-2xl text-gray-700 mb-8 md:mb-12 elegant-font leading-relaxed text-reveal-delay">
               Join thousands of students who have transformed their lives through the ancient wisdom of Vedic astrology.
               Master the cosmic sciences and unlock your highest potential.
             </p>
@@ -554,7 +567,7 @@ export default function HomePage() {
             >
               <Button
                 size="lg"
-                className="royal-button text-white px-16 py-6 rounded-full text-xl font-bold royal-font shadow-2xl button-hover-effect"
+                className="royal-button text-white px-8 md:px-16 py-4 md:py-6 rounded-full text-lg md:text-xl font-bold royal-font shadow-2xl button-hover-effect"
                 asChild
               >
                 <Link href="/classes">Explore Classes</Link>
@@ -562,14 +575,14 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 px-16 py-6 rounded-full text-xl font-bold royal-font button-hover-effect bg-transparent"
+                className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 px-8 md:px-16 py-4 md:py-6 rounded-full text-lg md:text-xl font-bold royal-font button-hover-effect bg-transparent"
                 asChild
               >
                 <Link href="/contact">Book Consultation</Link>
               </Button>
             </motion.div>
             <motion.p
-              className="text-lg text-gray-600 mt-8 elegant-font font-medium"
+              className="text-base md:text-lg text-gray-600 mt-6 md:mt-8 elegant-font font-medium"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}

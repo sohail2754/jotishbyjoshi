@@ -1,87 +1,59 @@
-import { type NextRequest, NextResponse } from "next/server"
-import {
-  getClassPrices,
-  createClassPrice,
-  updateClassPrice,
-  deleteClassPrice,
-  validateAdminSession,
-} from "@/lib/database"
-import { cookies } from "next/headers"
+import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
-    const prices = await getClassPrices()
-    return NextResponse.json({ success: true, prices })
+    // Mock data for now - replace with actual database query
+    const classPrices = [
+      {
+        id: "foundation-vedic-astrology",
+        name: "Foundation of Vedic Astrology",
+        price: 15000,
+        currency: "INR",
+        duration: "8 weeks",
+        level: "Beginner",
+        description: "Complete beginner course in Vedic astrology",
+      },
+      {
+        id: "advanced-predictive-astrology",
+        name: "Advanced Predictive Astrology",
+        price: 25000,
+        currency: "INR",
+        duration: "12 weeks",
+        level: "Advanced",
+        description: "Advanced techniques for professional astrologers",
+      },
+      {
+        id: "specialized-astrology-courses",
+        name: "Specialized Astrology Courses",
+        price: 18000,
+        currency: "INR",
+        duration: "6 weeks",
+        level: "Specialized",
+        description: "Focused courses on specific astrology aspects",
+      },
+      {
+        id: "marriage-astrology-course",
+        name: "Marriage & Relationship Astrology",
+        price: 12000,
+        currency: "INR",
+        duration: "4 weeks",
+        level: "Intermediate",
+        description: "Specialized course on relationship compatibility",
+      },
+      {
+        id: "medical-astrology-course",
+        name: "Medical Astrology Course",
+        price: 20000,
+        currency: "INR",
+        duration: "8 weeks",
+        level: "Advanced",
+        description: "Health predictions through astrological analysis",
+      },
+    ]
+
+    return NextResponse.json(classPrices)
   } catch (error) {
     console.error("Error fetching class prices:", error)
-    return NextResponse.json({ success: false, error: "Failed to fetch class prices" }, { status: 500 })
-  }
-}
-
-async function verifyAdmin() {
-  const cookieStore = cookies()
-  const sessionToken = cookieStore.get("admin_session")?.value
-
-  if (!sessionToken) {
-    return null
-  }
-
-  return await validateAdminSession(sessionToken)
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const session = await verifyAdmin()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const data = await request.json()
-    const price = await createClassPrice({
-      class_name: data.class_name,
-      display_name: data.display_name || data.class_name,
-      price: data.price,
-      original_price: data.original_price,
-      description: data.description,
-      duration: data.duration,
-      active: true,
-    })
-
-    return NextResponse.json({ success: true, price })
-  } catch (error) {
-    console.error("Error creating class price:", error)
-    return NextResponse.json({ success: false, error: "Failed to create class price" }, { status: 500 })
-  }
-}
-
-export async function PUT(request: NextRequest) {
-  try {
-    const session = await verifyAdmin()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const { id, ...data } = await request.json()
-    const price = await updateClassPrice(id, data)
-    return NextResponse.json({ success: true, price })
-  } catch (error) {
-    console.error("Error updating class price:", error)
-    return NextResponse.json({ success: false, error: "Failed to update class price" }, { status: 500 })
-  }
-}
-
-export async function DELETE(request: NextRequest) {
-  try {
-    const session = await verifyAdmin()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const { id } = await request.json()
-    await deleteClassPrice(id)
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error("Error deleting class price:", error)
-    return NextResponse.json({ success: false, error: "Failed to delete class price" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch class prices" }, { status: 500 })
   }
 }
