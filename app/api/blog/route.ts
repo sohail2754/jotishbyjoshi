@@ -3,6 +3,15 @@ export const dynamic = "force-dynamic"
 import { type NextRequest, NextResponse } from "next/server"
 import { getBlogPosts, searchBlogPosts, getBlogPostsByCategory } from "@/lib/database"
 
+/**
+ * GET /api/blog
+ *
+ * Optional query parameters:
+ *   ?search=string       – full-text search
+ *   ?category=Category   – filter by category
+ *   ?featured=true       – featured posts only
+ *   ?limit=number        – max number of posts
+ */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
