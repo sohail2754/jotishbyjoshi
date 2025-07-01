@@ -1,12 +1,7 @@
-export const dynamic = "force-dynamic"
-
 import { type NextRequest, NextResponse } from "next/server"
 import { getBlogPostBySlug } from "@/lib/database"
 
-/**
- * GET /api/blog/[slug]
- */
-export async function GET(_request: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   try {
     const post = await getBlogPostBySlug(params.slug)
 

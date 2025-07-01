@@ -1,27 +1,13 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Playfair_Display, Cormorant_Garamond } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
-import { cn } from "@/lib/utils"
 
-// Optimized font loading with next/font
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  variable: "--font-royal",
-})
-
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-elegant",
-})
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: {
@@ -117,10 +103,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Jyotish Joshi" />
       </head>
-      <body
-        className={cn("font-sans", inter.variable, playfairDisplay.variable, cormorantGaramond.variable)}
-        suppressHydrationWarning
-      >
+      <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <div className="flex flex-col min-h-screen">
             <Header />

@@ -1,4 +1,0 @@
-{
-  "//": "Vercel will still detect this as a Next.js project. We only relax the lock-file requirement.",
-  "installCommand": "pnpm install --no-frozen-lockfile"
-}

@@ -7,14 +7,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    // Re-enabled Next.js Image Optimization.
-    // The placeholder domain is for the default images.
-    // If you add images from other domains, add them here.
     domains: ['placeholder.svg'],
+    unoptimized: true
   },
   experimental: {
-    appDir: true,
-  },
+    appDir: true
+  }
 }
 
 export default nextConfig
